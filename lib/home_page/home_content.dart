@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:learn_flutter/Model/message_model.dart';
+import 'package:learn_flutter/models/message_model.dart';
+import 'home_list_cell.dart';
 
 class HomeContent extends StatefulWidget {
   HomeContent({Key key}) : super(key: key);
@@ -14,30 +15,56 @@ class HomeContent extends StatefulWidget {
 class _HomeContentState extends State<HomeContent> {
   // Default placeholder text
   String textToShow = "A";
+  MessageModel _model;
 
-@override
+  @override
   void initState() {
     super.initState();
     _loadData();
   }
 
-  void _updateText() {
-    setState(() {
-      // update the text
-      textToShow = "Flutter is Awesome!";
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return new Text(textToShow);
+    if (_model != null) {
+      MessageCardsModel card = null;
+      if (_model.data.cards.length > 0) {
+        card = _model.data.cards[0];
+      }
+
+      List<MessageCardModel> cardList = null;
+      if (card.card_group.length > 0) {
+        cardList = card.card_group;
+      }
+
+      if (cardList != null) {
+        return new ListView.builder(
+          itemCount: cardList.length,
+          itemBuilder: (context, index) {
+            // return new ListTile(
+            //   title: new Text('${cardList[index].mblog.text}'),
+            // );
+            return new HomeListCell(data: cardList[index]);
+          },
+        );
+      } else {
+        return new Center(
+          child: new Text("暂无数据"),
+        );
+      }
+    } else {
+      return new Center(
+        child: new Text("加载中..."),
+      );
+    }
   }
 
   _loadData() async {
-    var url = 'https://m.weibo.cn/api/container/getIndex?containerid=100103type%3D61%26q%3D%E8%80%81E%26t%3D0&page_type=searchall';
+    var url =
+        'https://m.weibo.cn/api/container/getIndex?containerid=100103type%3d61%26q%3d%e8%bd%ac%e5%8f%91%26t%3d0&page_type=searchall';
     var httpClient = new HttpClient();
 
     String result;
+    MessageModel model;
     try {
       var request = await httpClient.getUrl(Uri.parse(url));
       var response = await request.close();
@@ -45,8 +72,9 @@ class _HomeContentState extends State<HomeContent> {
         var jsonString = await response.transform(utf8.decoder).join();
         Map data = json.decode(jsonString);
         // result = data['origin'];
-        var model = new MessageModel.fromJson(data);
-        result = model.ok.toString();
+        var m = new MessageModel.fromJson(data);
+        result = m.ok.toString();
+        model = m;
       } else {
         result =
             'Error getting IP address:\nHttp status ${response.statusCode}';
@@ -61,15 +89,11 @@ class _HomeContentState extends State<HomeContent> {
     if (!mounted) return;
 
     // var str = Uri.encodeFull("没22");
-    var type = result.runtimeType;
+    // var type = result.runtimeType;
 
     setState(() {
       textToShow = result;
-      print(type);
-      print("mayinglun log:");
+      _model = model;
     });
   }
-
-  
-
 }
