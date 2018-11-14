@@ -14,7 +14,7 @@ class HomeContent extends StatefulWidget {
 
 class _HomeContentState extends State<HomeContent> {
   // Default placeholder text
-  String textToShow = "A";
+  String textToShow = "加载中...";
   MessageModel _model;
 
   @override
@@ -53,7 +53,7 @@ class _HomeContentState extends State<HomeContent> {
       }
     } else {
       return new Center(
-        child: new Text("加载中..."),
+        child: new Text("$textToShow"),
       );
     }
   }
@@ -80,7 +80,7 @@ class _HomeContentState extends State<HomeContent> {
             'Error getting IP address:\nHttp status ${response.statusCode}';
       }
     } catch (exception) {
-      result = 'Failed getting IP address';
+      result = exception.toString();
     }
 
     // If the widget was removed from the tree while the message was in flight,

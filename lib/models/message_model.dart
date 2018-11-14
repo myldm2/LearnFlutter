@@ -296,6 +296,7 @@ class MessageMblogModel {
   String rid;
   String source;
   String text;
+  String original_pic;
   MessageReweetedStatusModel retweeted_status;
   MessageUserModel user;
   MessageVisibleModel visible;
@@ -331,6 +332,7 @@ class MessageMblogModel {
       this.rid,
       this.source,
       this.text,
+      this.original_pic,
       this.retweeted_status,
       this.user,
       this.visible});
@@ -368,6 +370,7 @@ class MessageMblogModel {
     text = jsonRes['text'];
 
     text = text.replaceAll("<br />", "\n");
+    original_pic = jsonRes['original_pic'];
 
     retweeted_status = jsonRes['retweeted_status'] == null
         ? null
@@ -721,9 +724,9 @@ class MessagePictureModel {
     pid = jsonRes['pid'];
     size = jsonRes['size'];
     url = jsonRes['url'];
-    geo = jsonRes['geo'] == null
-        ? null
-        : new MessageGeoModel.fromJson(jsonRes['geo']);
+    // geo = jsonRes['geo'] == null
+    //     ? null
+    //     : new MessageGeoModel.fromJson(jsonRes['geo']);
     large = jsonRes['large'] == null
         ? null
         : new MessageLargeModel.fromJson(jsonRes['large']);

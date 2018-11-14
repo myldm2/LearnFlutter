@@ -23,11 +23,12 @@ class _HomePageState extends State<HomePage> {
       textToShow = "Flutter is Awesome!";
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFF0066),
+        backgroundColor: Colors.green,
         title: Text("Sample App"),
       ),
       body: new HomeContent(),
