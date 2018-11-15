@@ -234,6 +234,8 @@ class MessageCardModel {
   MessageActionModel actionlog;
   MessageMblogModel mblog;
 
+  String jsonString;
+
   MessageCardModel.fromParams(
       {this.card_type,
       this.display_arrow,
@@ -257,6 +259,8 @@ class MessageCardModel {
     mblog = jsonRes['mblog'] == null
         ? null
         : new MessageMblogModel.fromJson(jsonRes['mblog']);
+
+    jsonString = json.encode(jsonRes);
   }
 
   @override
