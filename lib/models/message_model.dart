@@ -267,6 +267,14 @@ class MessageCardModel {
   String toString() {
     return '{"card_type": $card_type,"display_arrow": $display_arrow,"show_type": $show_type,"card_type_name": ${card_type_name != null ? '${json.encode(card_type_name)}' : 'null'},"itemid": ${itemid != null ? '${json.encode(itemid)}' : 'null'},"scheme": ${scheme != null ? '${json.encode(scheme)}' : 'null'},"actionlog": $actionlog,"mblog": $mblog}';
   }
+
+  String getIdKey() {
+    String key = this.mblog.idstr;
+    if (this.mblog.retweeted_status != null) {
+      key = this.mblog.retweeted_status.idstr;
+    }
+    return key;
+  }
 }
 
 class MessageMblogModel {

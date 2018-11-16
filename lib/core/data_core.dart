@@ -8,10 +8,34 @@ typedef void DataCoreCallback(List<MessageCardModel> datas);
 
 class DataCore {
   var datas = <MessageCardModel>[];
+  var mapData = <String, MessageCardModel>{};
 
   requestData(DataCoreCallback callBack) async {
-    var url =
-        'https://m.weibo.cn/api/container/getIndex?containerid=100103type%3d61%26q%3d%e8%bd%ac%e5%8f%91%26t%3d0&page_type=searchall';
+    var conditions = <String>[
+      "抽 一名",
+      "抽 1名",
+    ];
+
+    for (int j = 0; j < conditions.length; j++) {
+      var condition = conditions[j];
+      for (int i = 0; i < 20; i++) {
+        await loadData(condition, i);
+      }
+    }
+
+    callBack(this.datas);
+  }
+
+  loadData(String keyword, int page) async {
+    String containerid =
+        "100103type%3d61%26q%3d" + Uri.encodeFull(keyword) + "%26t%3d0";
+
+    var url = 'https://m.weibo.cn/api/container/getIndex?containerid=' +
+        containerid +
+        '&page_type=searchall&page=$page';
+
+    print(url);
+
     var httpClient = new HttpClient();
 
     String result;
@@ -40,14 +64,17 @@ class DataCore {
       if (model.data.cards.length > 0) {
         model.data.cards.forEach((cardsModel) {
           cardsModel.card_group.forEach((model) {
-            this.datas.add(model);
+            this.saveIfNeeded(model);
           });
         });
       }
-    } else {
-      print("mayinglun log: model is null");
     }
+  }
 
-    callBack(this.datas);
+  saveIfNeeded(MessageCardModel data) {
+    if (this.mapData[data.getIdKey()] == null) {
+      this.datas.add(data);
+      this.mapData[data.getIdKey()] = data;
+    }
   }
 }
